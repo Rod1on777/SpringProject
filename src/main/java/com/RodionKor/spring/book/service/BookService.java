@@ -4,6 +4,7 @@ package com.RodionKor.spring.book.service;
 import com.RodionKor.spring.book.entity.BookEntity;
 import org.springframework.stereotype.Service;
 
+import java.awt.print.Book;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -45,5 +46,22 @@ public class BookService {
         bookStorage.add(book);
         System.out.println("book added - id="+book.getId());
         return book;
+    }
+
+    public Optional<BookEntity> edit(BookEntity book){
+        BookEntity oldBookEntity = byId(book.getId()).orElseThrow();
+        oldBookEntity.setTitle(book.getTitle());
+        oldBookEntity.setDescription((book.getDescription()));
+        return Optional.of(oldBookEntity);
+    }
+
+    public Boolean delete(Integer id){
+        Optional<BookEntity> book = byId(id);
+        if(book.isEmpty()){
+            return false;
+        }
+
+        bookStorage.remove(book.get());
+        return true;
     }
 }

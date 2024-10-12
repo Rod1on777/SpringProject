@@ -5,6 +5,7 @@ import com.RodionKor.spring.book.entity.BookEntity;
 import com.RodionKor.spring.book.service.BookService;
 import org.springframework.web.bind.annotation.*;
 
+import java.awt.print.Book;
 import java.util.List;
 
 @RestController
@@ -35,4 +36,15 @@ public class BookApiController {
     public BookEntity create(@RequestBody BookEntity request){
         return bookService.create(request.getTitle(), request.getDescription());
     }
+
+    @PutMapping("/api/v1/book/{id}")
+    public BookEntity edit(@PathVariable Integer id, @RequestBody BookEntity request){
+        return bookService.edit(request).orElseThrow(ResourceNotFoundException::new);
+    }
+
+    @DeleteMapping("/api/v1/book/{id}")
+    public Boolean delete(@PathVariable Integer id){
+        return bookService.delete(id);
+    }
+
 }
