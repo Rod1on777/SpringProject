@@ -5,10 +5,7 @@ import com.RodionKor.spring.book.entity.BookEntity;
 import org.springframework.stereotype.Service;
 
 import java.awt.print.Book;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
-import java.util.Random;
+import java.util.*;
 
 @Service
 public class BookService {
@@ -49,7 +46,11 @@ public class BookService {
     }
 
     public Optional<BookEntity> edit(BookEntity book){
-        BookEntity oldBookEntity = byId(book.getId()).orElseThrow();
+        Optional<BookEntity> oldBookOptional = byId(book.getId());
+        if(oldBookOptional.isEmpty()){
+            return Optional.empty();
+        }
+        BookEntity oldBookEntity = oldBookOptional.get();
         oldBookEntity.setTitle(book.getTitle());
         oldBookEntity.setDescription((book.getDescription()));
         return Optional.of(oldBookEntity);
@@ -63,5 +64,21 @@ public class BookService {
 
         bookStorage.remove(book.get());
         return true;
+    }
+
+    public Optional<BookEntity> editPart(Integer id, Map<String, String> fields){
+        Optional<BookEntity> optionalBookEntity = byId(id);
+        if(optionalBookEntity.isEmpty()){
+            return Optional.empty();
+        }
+
+        BookEntity book = optionalBookEntity.get();
+        for(String key : fields.keySet()){
+            switch (key) {
+                case "title" -> book.setTitle(fields.get(key));
+                case "description" -> book.setDescription(fields.get(key));
+            }
+        }
+        return Optional.of(book);
     }
 }
